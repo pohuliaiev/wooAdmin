@@ -1,0 +1,41 @@
+<% if (totalPages > 1) { %>
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <% if (currentPage > 1) { %>
+    <!-- Render link to the first page -->
+    <li class="page-item">
+      <a href="/products-list" class="page-link">Первая</a>
+    </li>
+    <% } %> <% if (currentPage > 2) { %>
+    <!-- Render link to the previous page -->
+    <li class="page-item">
+      <a class="page-link" href="/products-list?page=<%= currentPage - 1 %>"><span aria-hidden="true">&laquo;</span></a>
+    </li>
+    <% } %>
+
+    <!-- Render links for current and nearby pages -->
+    <% for (let page = Math.max(1, currentPage - 2); page <= Math.min(currentPage + 2, totalPages); page++) { %> <% if (page === currentPage) { %>
+    <!-- Highlight the current page -->
+    <li class="page-item disabled">
+      <a class="page-link"><%= page %></a>
+    </li>
+    <% } else { %>
+    <!-- Render pagination link with query parameter -->
+    <li class="page-item"><a class="page-link" href="/products-list?page=<%= page %>"><%= page %></a></li>
+
+    <% } %> <% } %> <% if (currentPage < totalPages - 1) { %>
+    <!-- Render link to the next page -->
+    <li class="page-item">
+      <a class="page-link" href="/products-list?page=<%= currentPage + 1 %>" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    <% } %> <% if (currentPage < totalPages) { %>
+    <!-- Render link to the last page -->
+    <li class="page-item">
+      <a href="/products-list?page=<%= totalPages %>" class="page-link">Последняя</a>
+    </li>
+    <% } %>
+  </ul>
+</nav>
+<% } %>

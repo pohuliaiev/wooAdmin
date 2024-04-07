@@ -59,3 +59,48 @@ exports.upload = function () {
     }
   }
 }
+
+exports.editor = async function (req, res) {
+  try {
+    const updateData = await updateHistory.readFile("./uploads/updateHistory.json")
+
+    const wooProducts = await updateHistory.readFile("./uploads/woocommerce.json")
+
+    const pageSize = 50
+
+    const page = parseInt(req.query.page) || 1
+
+    const startIndex = (page - 1) * pageSize
+    const endIndex = Math.min(startIndex + pageSize, wooProducts.length)
+
+    const products = wooProducts.slice(startIndex, endIndex)
+
+    const totalPages = Math.ceil(wooProducts.length / pageSize)
+
+    const currentPage = page
+
+    const { sync_update, price_upload } = updateData
+    res.render("list", { sync_update, price_upload, products, page, totalPages, currentPage })
+  } catch (error) {
+    console.error("Error fetching data:", error)
+    res.status(500).send("Internal Server Error")
+  }
+}
+
+exports.search = function () {
+  return async function (req, res) {
+    try {
+      const products = await updateHistory.readFile("./uploads/woocommerce.json")
+
+      const searchTerm = req.body.params.term.toLowerCase()
+      const searchedItem = products.filter(item => item.inner_id.toLowerCase().includes(searchTerm))
+      res.json({
+        success: true,
+        searchedItem
+      })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}

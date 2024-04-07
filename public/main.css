@@ -5,6 +5,14 @@
 .mt-20 {
   margin-top: 20px;
 }
+.mb-10 {
+  margin-bottom: 10px;
+}
+.categories-flex-edit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
 
 /*Spinner*/
 .lds-ring {
