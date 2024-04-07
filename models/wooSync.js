@@ -19,11 +19,12 @@ exports.downloadWooJson = async function () {
     })
 
     // Extract the URL from the response data
-    const url = response.data // Assuming the URL is returned in the 'file_path' field
+    const products = response.data.products
+    const categories = response.data.categories
 
     // Download the file using the obtained URL
-    await downloadFile(url)
-
+    await downloadFile(products, "woocommerce.json")
+    await downloadFile(categories, "categories.json")
     console.log("File downloaded successfully")
   } catch (error) {
     // Handle any errors
@@ -31,7 +32,7 @@ exports.downloadWooJson = async function () {
   }
 }
 
-async function downloadFile(url) {
+async function downloadFile(url, filename) {
   try {
     // Send GET request to download the file
     const response = await axios({
@@ -41,7 +42,7 @@ async function downloadFile(url) {
     })
 
     // Write the downloaded file to the project root directory
-    const fileName = "woocommerce.json" // Specify the file name
+    const fileName = filename // Specify the file name
     const directoryName = "uploads"
     const rootDir = process.cwd()
     const filePath = path.join(rootDir, directoryName, fileName) // Construct the file path

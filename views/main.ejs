@@ -66,7 +66,7 @@
             </tbody>
           </table>
         </div>
-        <% } %> <% if (exist) { %>
+        <% } %> <% if (exist) { %> <% let i = 0; %>
         <div class="price-update-table mt-20">
           <h2 class="text-center">Отсутствующие на сайте</h2>
           <table class="table table-bordered">
@@ -76,15 +76,53 @@
                 <th scope="col">Название</th>
                 <th scope="col">Цена</th>
                 <th scope="col"></th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
-              <% exist.forEach(item => { %>
+              <% exist.forEach(item => { %> <% i += 1; %>
               <tr>
                 <th scope="row" class="text-center"><%= item.id %></th>
                 <td><%= item.name %></td>
                 <td><%= item.price %></td>
+                <td>
+                  <button type="button" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNewProducts-<%= i %>" aria-expanded="false" aria-controls="collapseNewProducts-<%= i %>">Подробнее <i class="bi bi-arrow-down-square-fill"></i></button>
+                </td>
                 <td><button type="button" class="btn btn-info">Добавить</button></td>
+              </tr>
+              <tr class="collapse" id="collapseNewProducts-<%= i %>">
+                <td colspan="5">
+                  <div class="card card-body">
+                    <div class="mb-3">
+                      <label for="productTitle-<%= item.id %>" class="form-label">Название товара</label>
+                      <input type="text" class="form-control" id="productTitle-<%= item.id %>" />
+                      <div class="form-text">Вы можете изменить название товара если необходимо</div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="productCode-<%= item.id %>" class="form-label">Второй код товара</label>
+                      <input type="text" class="form-control" id="productCode-<%= item.id %>" />
+                      <div class="form-text">Здесь вы можете задать второй код товара, но если хотите чтобы он создался автоматически оставьте поле пустым</div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="autoBrands-<%= item.id %>" class="form-label">Марка авто</label>
+                      <select class="form-select form-select-sm" id="autoBrands-<%= item.id %>">
+                        <option selected>Open this select menu</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="autoModels-<%= item.id %>" class="form-label">Модель</label>
+                      <select class="form-select form-select-sm" multiple disabled id="autoModels-<%= item.id %>" size="10"></select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
+                </td>
               </tr>
               <% }); %>
             </tbody>
