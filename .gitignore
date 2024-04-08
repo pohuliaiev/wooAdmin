@@ -20,3 +20,4 @@ uploads/updateHistory.json
 uploads/woocommerce.json
 uploads/categories.json
 import_log.txt
+wp-custom-routes.php

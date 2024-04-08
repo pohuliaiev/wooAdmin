@@ -1,5 +1,7 @@
 const dotenv = require("dotenv")
 dotenv.config()
+const fs = require("fs").promises
+const path = require("path")
 const wooSync = require("../models/wooSync")
 const updateHistory = require("../models/updateHistory")
 const uploadPrice = require("../models/uploadPrice")
@@ -8,7 +10,21 @@ exports.home = async function (req, res) {
   try {
     const updateData = await updateHistory.readFile("./uploads/updateHistory.json")
     const uploadedPrice = await updateHistory.readFile("./uploads/pricelist.json")
-    const wooProducts = await updateHistory.readFile("./uploads/woocommerce.json")
+    let wooProducts
+
+    try {
+      // Attempt to read the woocommerce.json file
+      wooProducts = await updateHistory.readFile("./uploads/woocommerce.json")
+    } catch (error) {
+      // If the file does not exist, download it
+      console.error("File woocommerce.json does not exist. Downloading...")
+      const date = updateHistory.currentDate
+      await wooSync.downloadWooJson()
+      await updateHistory.updateHistory({ sync_update: date })
+
+      // After downloading, attempt to read the file again
+      wooProducts = await updateHistory.readFile("./uploads/woocommerce.json")
+    }
     const compare = await uploadPrice.priceCompare(uploadedPrice, wooProducts)
     const exist = await uploadPrice.productsNotExistInSite(uploadedPrice, wooProducts)
     const { sync_update, price_upload } = updateData
@@ -24,9 +40,11 @@ exports.wooSync = function () {
     try {
       const date = updateHistory.currentDate
       await wooSync.downloadWooJson()
+
       await updateHistory.updateHistory({
         sync_update: date
       })
+
       res.json({
         success: true,
         date
@@ -66,6 +84,8 @@ exports.editor = async function (req, res) {
 
     const wooProducts = await updateHistory.readFile("./uploads/woocommerce.json")
 
+    const categories = await updateHistory.readFile("./uploads/categories.json")
+
     const pageSize = 50
 
     const page = parseInt(req.query.page) || 1
@@ -80,7 +100,7 @@ exports.editor = async function (req, res) {
     const currentPage = page
 
     const { sync_update, price_upload } = updateData
-    res.render("list", { sync_update, price_upload, products, page, totalPages, currentPage })
+    res.render("list", { sync_update, price_upload, products, page, totalPages, currentPage, categories })
   } catch (error) {
     console.error("Error fetching data:", error)
     res.status(500).send("Internal Server Error")

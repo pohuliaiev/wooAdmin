@@ -25,20 +25,43 @@
 
       <table class="table table-bordered">
         <thead>
-          <th scope="col" class="text-center">Код товара</th>
-          <th scope="col">Название</th>
-          <th scope="col">Цена</th>
-          <th scope="col">Категории</th>
+          <th scope="col" class="text-center" width="10%">Код товара</th>
+          <th scope="col" width="10%">Название</th>
+          <th scope="col" width="10%">Цена</th>
+          <th scope="col" >Категории</th>
         </thead>
         <tbody id="products-table">
           <% products.forEach(product => { %>
-          <tr>
-            <td><%= product.inner_id %></td>
-            <td><%= product.post_title %></td>
-            <td><%= product.price %></td>
-            <td></td>
-          </tr>
-          <% }); %>
+            <% const productCats = product.category_ids.split(',').map(Number) %>
+            <% const matchedCategories = {} %>
+            <% categories.forEach(category => {
+                  category.children.forEach(child => {
+                      if (productCats.includes(parseInt(child.id))) {
+                          if (!matchedCategories[category.name]) {
+                              matchedCategories[category.name] = [];
+                          }
+                          matchedCategories[category.name].push(child.name);
+                      }
+                  });
+              }); 
+            %>
+        
+            <tr>
+                <td width="10%"><%= product.inner_id %></td>
+                <td width="10%"><%= product.post_title %></td>
+                <td width="10%"><%= product.price %></td>
+                <td style="max-width: 70%;">
+                    <div class="d-flex" style="flex-wrap: wrap; max-width: 100%;">
+                        <% for (const categoryName in matchedCategories) { %>
+                            <% const childrenNames = matchedCategories[categoryName]; %>
+                            <% childrenNames.forEach(childName => { %>
+                                <div class="badge text-bg-warning mb-10" style="margin-left: 5px;"><%= categoryName %> <%= childName %></div> 
+                            <% }); %>
+                        <% } %>
+                    </div>
+                </td>
+            </tr>
+        <% }); %>
         </tbody>
       </table>
       <%- include('pagination') %>
