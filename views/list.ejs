@@ -29,9 +29,12 @@
           <th scope="col" width="10%">Название</th>
           <th scope="col" width="10%">Цена</th>
           <th scope="col" >Категории</th>
+          <th scope="col" ></th>
         </thead>
         <tbody id="products-table">
+          <% let i = 0 %>
           <% products.forEach(product => { %>
+            <% i+=1 %>
             <% const productCats = product.category_ids.split(',').map(Number) %>
             <% const matchedCategories = {} %>
             <% categories.forEach(category => {
@@ -60,6 +63,64 @@
                         <% } %>
                     </div>
                 </td>
+                <td>
+                  <button type="button" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNewProducts-<%= i %>" aria-expanded="false" aria-controls="collapseNewProducts-<%= i %>"><i class="bi bi-arrow-down-square-fill"></i></button>
+                </td>
+            </tr>
+            <tr class="collapse" id="collapseNewProducts-<%= i %>">
+              <td colspan="5">
+                <div class="card card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label for="productTitle-<%= product.ID %>" class="form-label">Название товара</label>
+                        <input type="text" class="form-control" id="productTitle-<%= product.ID %>" value="<%= product.post_title %>"/>
+                        <div class="form-text">Вы можете изменить название товара если необходимо</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="productCode-<%= product.ID %>" class="form-label">Второй код товара</label>
+                        <input type="text" class="form-control" id="productCode-<%= product.ID %>" />
+                        <div class="form-text">Здесь вы можете задать второй код товара, но если хотите чтобы он создался автоматически оставьте поле пустым</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="autoBrands-<%= product.ID %>" class="form-label">Марка авто</label>
+                        <select class="form-select form-select-sm auto-brand-select" id="autoBrands-<%= product.ID %>"></select>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="autoModels-<%= product.ID %>" class="form-label">Модель</label>
+                        <select class="form-select form-select-sm" multiple disabled id="autoModels-<%= product.ID %>" size="10"></select>
+                      </div>
+                      <button type="submit" class="btn btn-primary add-category" id="add_btn-<%= product.ID %>">Добавить категорию</button>
+                      <div class="mb-3">
+                        	
+                        
+                        <div class="show-content" data-id="<%= product.ID %>">
+                          <%- product.content %>
+                        </div>
+                        <button type="button" class="btn btn-secondary edit-content" data-id="<%= product.ID %>">Редактировать</button>
+                      </div>
+
+                      
+                      <button type="submit" class="btn btn-success">Обновить товар</button>
+                      <button type="submit" class="btn btn-danger">Удалить</button>
+                    </div>
+                    <div class="col-md-6">
+                      <h5 class="text-center">Категории</h5>
+                      <div class="categories-flex-edit" id="categories-<%= product.ID %>">
+                        <% for (const categoryName in matchedCategories) { %>
+                          <% const childrenNames = matchedCategories[categoryName]; %>
+                          <% childrenNames.forEach(childName => { %>
+                              <div class="badge text-bg-warning mb-10" style="margin-left: 5px;"><%= categoryName %> <%= childName %> <button type="button" class="btn-close" aria-label="Close"></button></div> 
+                          <% }); %>
+                      <% } %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
             </tr>
         <% }); %>
         </tbody>
@@ -69,7 +130,9 @@
 
   </div>
 </main>
-
+<script>
+  
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/editor.js"></script>

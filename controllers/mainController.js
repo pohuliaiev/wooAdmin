@@ -111,9 +111,27 @@ exports.search = function () {
   return async function (req, res) {
     try {
       const products = await updateHistory.readFile("./uploads/woocommerce.json")
+      const categories = await updateHistory.readFile("./uploads/categories.json")
 
       const searchTerm = req.body.params.term.toLowerCase()
       const searchedItem = products.filter(item => item.inner_id.toLowerCase().includes(searchTerm))
+
+      // Iterate through each searched item and add category information
+      searchedItem.forEach(item => {
+        const productCats = item.category_ids.split(",").map(Number)
+        const matchedCategories = []
+
+        categories.forEach(category => {
+          category.children.forEach(child => {
+            if (productCats.includes(parseInt(child.id))) {
+              matchedCategories.push(`${category.name} ${child.name}`)
+            }
+          })
+        })
+
+        item.categories = matchedCategories
+      })
+
       res.json({
         success: true,
         searchedItem
