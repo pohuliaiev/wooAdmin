@@ -43,7 +43,7 @@
                           if (!matchedCategories[category.name]) {
                               matchedCategories[category.name] = [];
                           }
-                          matchedCategories[category.name].push(child.name);
+                          matchedCategories[category.name].push({ id: child.id, name: child.name });
                       }
                   });
               }); 
@@ -58,7 +58,7 @@
                         <% for (const categoryName in matchedCategories) { %>
                             <% const childrenNames = matchedCategories[categoryName]; %>
                             <% childrenNames.forEach(childName => { %>
-                                <div class="badge text-bg-warning mb-10" style="margin-left: 5px;"><%= categoryName %> <%= childName %></div> 
+                                <div class="badge text-bg-warning mb-10" style="margin-left: 5px;" data-id="<%= childName.id %>"><%= categoryName %> <%= childName.name %></div> 
                             <% }); %>
                         <% } %>
                     </div>
@@ -86,7 +86,7 @@
 
                       <div class="mb-3">
                         <label for="autoBrands-<%= product.ID %>" class="form-label">Марка авто</label>
-                        <select class="form-select form-select-sm auto-brand-select" id="autoBrands-<%= product.ID %>"></select>
+                        <select class="form-select form-select-sm auto-brand-select" id="autoBrands-<%= product.ID %>" data-id="<%= product.ID %>"></select>
                       </div>
 
                       <div class="mb-3">
@@ -97,14 +97,14 @@
                       <div class="mb-3">
                         	
                         
-                        <div class="show-content" data-id="<%= product.ID %>">
+                        <div class="show-content" data-id="<%= product.ID %>" id="editor-<%= product.ID %>">
                           <%- product.content %>
                         </div>
                         <button type="button" class="btn btn-secondary edit-content" data-id="<%= product.ID %>">Редактировать</button>
                       </div>
 
                       
-                      <button type="submit" class="btn btn-success">Обновить товар</button>
+                      <button type="submit" class="btn btn-success" data-id="<%= product.ID %>">Обновить товар</button>
                       <button type="submit" class="btn btn-danger">Удалить</button>
                     </div>
                     <div class="col-md-6">
@@ -113,7 +113,7 @@
                         <% for (const categoryName in matchedCategories) { %>
                           <% const childrenNames = matchedCategories[categoryName]; %>
                           <% childrenNames.forEach(childName => { %>
-                              <div class="badge text-bg-warning mb-10" style="margin-left: 5px;"><%= categoryName %> <%= childName %> <button type="button" class="btn-close" aria-label="Close"></button></div> 
+                              <div class="badge text-bg-warning mb-10" style="margin-left: 5px;" data-id="<%= childName.id %>"><%= categoryName %> <%= childName.name %> <button type="button" class="btn-close" aria-label="Close"></button></div> 
                           <% }); %>
                       <% } %>
                       </div>

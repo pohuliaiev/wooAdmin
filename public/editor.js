@@ -151,6 +151,10 @@ addCategoryButtons.forEach(function (button) {
 
     const categories = document.getElementById(`categories-${itemId}`)
 
+    const selectBrands = document.querySelector(`[data-id="${itemId}"]`)
+    const selectedBrandOption = selectBrands.options[selectBrands.selectedIndex]
+    const brand = selectedBrandOption.textContent
+
     selectedModels.forEach(model => {
       // Check if an element with the same data-id already exists in the container
       const existingElement = categories.querySelector(`[data-id="${model.id}"]`)
@@ -161,7 +165,7 @@ addCategoryButtons.forEach(function (button) {
         const span = document.createElement("span")
         span.classList.add("badge", "text-bg-warning", "mb-10")
         // Set the text content of the div
-        span.innerHTML = `${model.name} <button type="button" class="btn-close" aria-label="Close"></button>`
+        span.innerHTML = `${brand}: ${model.name} <button type="button" class="btn-close" aria-label="Close"></button>`
 
         // Set the data-id attribute of the div
         span.setAttribute("data-id", model.id)
@@ -178,60 +182,77 @@ addCategoryButtons.forEach(function (button) {
 const editButtons = document.querySelectorAll(".edit-content")
 
 editButtons.forEach(button => {
-  button.addEventListener("click", function () {
+  button.addEventListener("click", function handleClick() {
     const productId = button.getAttribute("data-id")
     const contentDiv = document.querySelector(`.show-content[data-id="${productId}"]`)
-    const content = contentDiv.innerHTML
+    if (contentDiv) {
+      const content = contentDiv.innerHTML
+      const textarea = document.createElement("textarea")
+      textarea.value = content
+      textarea.setAttribute("id", `editor-content-${productId}`) // Add data-id attribute
 
-    // Replace the content div with a textarea
-    const textarea = document.createElement("textarea")
-    textarea.value = content
-    textarea.setAttribute("id", `editor-content-${productId}`) // Add data-id attribute
-    contentDiv.parentNode.replaceChild(textarea, contentDiv)
+      // Save a reference to the original div before replacing it
+      const parent = contentDiv.parentNode
+      const nextSibling = contentDiv.nextSibling
 
-    // Initialize TinyMCE on the textarea
-    tinymce.init({
-      selector: "textarea",
-      plugins: "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown",
-      toolbar: "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-      tinycomments_mode: "embedded",
-      tinycomments_author: "Author name",
-      mergetags_list: [
-        { value: "First.Name", title: "First Name" },
-        { value: "Email", title: "Email" }
-      ],
-      ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant"))
-    })
-
-    // Change button class to 'save-content'
-    button.classList.remove("edit-content")
-    button.classList.add("save-content")
-
-    // Change button text to 'Сохранить'
-    button.textContent = "Сохранить"
-
-    // Attach event listener for save button
-    button.addEventListener("click", function () {
-      // Get the updated content from TinyMCE
-      const updatedContent = tinymce.get(`editor-content-${productId}`).getContent()
-
-      // Perform any action needed to save the updated content
-      const contentDiv = document.createElement("div")
-      contentDiv.classList.add("show-content")
-      contentDiv.setAttribute("data-id", `${productId}`)
-      contentDiv.innerHTML = updatedContent
-      // Replace TinyMCE instance with the original textarea
-      const originalTextarea = tinymce.get(`editor-content-${productId}`).getBody()
-      const parent = originalTextarea.parentNode
+      // Replace the content div with the textarea
       parent.replaceChild(textarea, contentDiv)
-      tinymce.remove(`editor-content-${productId}`)
 
-      // Change button class back to 'edit-content'
-      button.classList.remove("save-content")
-      button.classList.add("edit-content")
+      tinymce.init({
+        selector: `textarea#editor-content-${productId}`
+        // TinyMCE initialization options...
+      })
 
-      // Change button text back to 'Редактировать'
-      button.textContent = "Редактировать"
-    })
+      // Change button class to 'save-content'
+      button.classList.remove("edit-content")
+      button.classList.add("save-content")
+
+      // Change button text to 'Сохранить'
+      button.textContent = "Сохранить"
+
+      // Attach event listener for save button
+      button.removeEventListener("click", handleClick) // Remove the event listener
+      button.addEventListener("click", function () {
+        const productId = button.getAttribute("data-id")
+        const updatedContent = tinymce.get(`editor-content-${productId}`).getContent()
+        tinymce.get(`editor-content-${productId}`).hide()
+
+        // Find the textarea element
+        const textarea = document.getElementById(`editor-content-${productId}`)
+        if (!textarea || textarea.parentElement !== parent) {
+          // If textarea doesn't exist or is not a direct child of parent, exit the function
+          return
+        }
+
+        // Restore the original div
+        const originalDiv = document.createElement("div")
+        originalDiv.classList.add("show-content")
+        originalDiv.setAttribute("data-id", productId)
+        originalDiv.innerHTML = updatedContent
+
+        // Insert the original div back into the DOM before the textarea
+        parent.insertBefore(originalDiv, textarea)
+
+        // Remove the textarea
+        parent.removeChild(textarea)
+
+        // Change button class back to 'edit-content'
+        button.classList.remove("save-content")
+        button.classList.add("edit-content")
+
+        // Change button text back to 'Редактировать'
+        button.textContent = "Редактировать"
+
+        // Destroy the existing instance of TinyMCE
+        const editor = tinymce.get(`editor-content-${productId}`)
+        if (editor) {
+          editor.remove()
+        }
+
+        // Reattach the event listener for edit button
+        button.removeEventListener("click", handleClick)
+        button.addEventListener("click", handleClick)
+      })
+    }
   })
 })
