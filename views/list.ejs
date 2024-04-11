@@ -51,10 +51,10 @@
         
             <tr>
                 <td width="10%"><%= product.inner_id %></td>
-                <td width="10%"><%= product.post_title %></td>
+                <td width="10%" id="title-<%= product.ID %>"><%= product.post_title %></td>
                 <td width="10%"><%= product.price %></td>
                 <td style="max-width: 70%;">
-                    <div class="d-flex" style="flex-wrap: wrap; max-width: 100%;">
+                    <div class="d-flex" style="flex-wrap: wrap; max-width: 100%;" id="catlist-<%= product.ID %>">
                         <% for (const categoryName in matchedCategories) { %>
                             <% const childrenNames = matchedCategories[categoryName]; %>
                             <% childrenNames.forEach(childName => { %>
@@ -104,8 +104,9 @@
                       </div>
 
                       
-                      <button type="submit" class="btn btn-success" data-id="<%= product.ID %>">Обновить товар</button>
+                      <button type="submit" class="btn btn-success update-product" data-id="<%= product.ID %>">Обновить товар</button>
                       <button type="submit" class="btn btn-danger">Удалить</button>
+                      <button type="submit" class="btn btn-dark" id="test-btn" data-id="<%= product.ID %>">Тест</button>
                     </div>
                     <div class="col-md-6">
                       <h5 class="text-center">Категории</h5>

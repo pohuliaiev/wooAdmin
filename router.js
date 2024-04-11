@@ -18,4 +18,6 @@ router.post("/upload-price", mainController.upload())
 
 router.post("/search", mainController.search())
 
+router.post("/update-product", mainController.productUpdate())
+
 module.exports = router

@@ -256,3 +256,57 @@ editButtons.forEach(button => {
     }
   })
 })
+
+const updateButtons = document.querySelectorAll(".update-product")
+updateButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    loader.classList.remove("d-none")
+    fadeOverlay.style.display = "block"
+    const productId = this.getAttribute("data-id")
+    const categoryDiv = document.getElementById(`categories-${productId}`)
+    const spans = categoryDiv.querySelectorAll("span[data-id]")
+    const categories = Array.from(spans).map(span => span.dataset.id) //array of categories
+    const productTitle = document.getElementById(`productTitle-${productId}`).value //product name
+    const innerId = document.getElementById(`productCode-${productId}`).value //inner id
+    const contentDiv = document.querySelector(`.show-content[data-id="${productId}"]`)
+    const content = contentDiv.innerHTML
+
+    const data = {
+      productId,
+      categories,
+      productTitle,
+      innerId,
+      content
+    }
+
+    axios
+      .post("/update-product", data)
+      .then(response => {
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        console.log("product updated", innerId)
+      })
+      .catch(error => {
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        console.error("Error updating product:", error)
+      })
+  })
+})
+
+const testBtn = document.getElementById("test-btn")
+testBtn.addEventListener("click", function () {
+  const productId = this.getAttribute("data-id")
+  const categoryDiv = document.getElementById(`categories-${productId}`)
+  const spans = categoryDiv.querySelectorAll("span[data-id]")
+  const categories = Array.from(spans).map(span => span.dataset.id)
+  const catNames = Array.from(spans).map(span => span.textContent)
+  const catListDiv = document.getElementById(`catlist-${productId}`)
+  catNames.forEach(item => {
+    const div = document.createElement("div")
+    div.classList.add("badge", "text-bg-warning", "mb-10")
+    div.style.marginLeft = "5px"
+    div.textContent = item
+    catListDiv.appendChild(div)
+  })
+})

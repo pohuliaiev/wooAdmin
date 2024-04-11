@@ -5,6 +5,7 @@ const path = require("path")
 const wooSync = require("../models/wooSync")
 const updateHistory = require("../models/updateHistory")
 const uploadPrice = require("../models/uploadPrice")
+const updateProducts = require("../models/updateProducts")
 
 exports.home = async function (req, res) {
   try {
@@ -135,6 +136,25 @@ exports.search = function () {
       res.json({
         success: true,
         searchedItem
+      })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.productUpdate = function () {
+  return async function (req, res) {
+    try {
+      const id = req.body.productId
+      const categories = req.body.categories
+      const name = req.body.productTitle
+      const innerId = req.body.innerId
+      const content = req.body.content
+      await updateProducts.updateProduct(id, name, content, innerId, categories)
+      res.json({
+        success: true
       })
     } catch (error) {
       console.error("Error updating data:", error)
