@@ -4,7 +4,6 @@ const moment = require("moment-timezone")
 
 exports.updateHistory = async function (newData) {
   try {
-    console.log("running_func")
     const rootDir = process.cwd()
     const filePath = path.join(rootDir, "uploads", "updateHistory.json")
 
