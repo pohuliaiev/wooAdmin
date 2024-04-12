@@ -152,7 +152,27 @@ exports.productUpdate = function () {
       const name = req.body.productTitle
       const innerId = req.body.innerId
       const content = req.body.content
-      await updateProducts.updateProduct(id, name, content, innerId, categories)
+      const price = req.body.price
+      const cross = req.body.crossCode
+      const updatedData = { post_title: name, inner_id_2: innerId, content: content, category_ids: categories.join(","), price: price, crossCode: cross }
+      await updateProducts.updateProduct(id, name, content, innerId, categories, price, cross)
+      await updateProducts.updateProductJSON("./uploads/woocommerce.json", id, updatedData)
+      res.json({
+        success: true
+      })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.productDelete = function () {
+  return async function (req, res) {
+    try {
+      const id = req.body.id
+      await updateProducts.deleteProduct(id)
+      await updateProducts.removeProductJSON("./uploads/woocommerce.json", id)
       res.json({
         success: true
       })

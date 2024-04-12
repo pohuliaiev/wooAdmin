@@ -49,7 +49,7 @@
               }); 
             %>
         
-            <tr>
+            <tr data-id="<%= product.ID %>">
                 <td width="10%"><%= product.inner_id %></td>
                 <td width="10%" id="title-<%= product.ID %>"><%= product.post_title %></td>
                 <td width="10%"><%= product.price %></td>
@@ -67,7 +67,7 @@
                   <button type="button" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNewProducts-<%= i %>" aria-expanded="false" aria-controls="collapseNewProducts-<%= i %>"><i class="bi bi-arrow-down-square-fill"></i></button>
                 </td>
             </tr>
-            <tr class="collapse" id="collapseNewProducts-<%= i %>">
+            <tr class="collapse" id="collapseNewProducts-<%= i %>" data-id="<%= product.ID %>">
               <td colspan="5">
                 <div class="card card-body">
                   <div class="row">
@@ -80,8 +80,20 @@
 
                       <div class="mb-3">
                         <label for="productCode-<%= product.ID %>" class="form-label">Второй код товара</label>
-                        <input type="text" class="form-control" id="productCode-<%= product.ID %>" />
+                        <input type="text" class="form-control" id="productCode-<%= product.ID %>" value="<%= product.inner_id_2 %>"/>
                         <div class="form-text">Здесь вы можете задать второй код товара, но если хотите чтобы он создался автоматически оставьте поле пустым</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="productPrice-<%= product.ID %>" class="form-label">Цена</label>
+                        <input type="text" class="form-control" id="productPrice-<%= product.ID %>" value="<%= product.price %>"/>
+                        <div class="form-text">Здесь вы можете изменить цену</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="productCross-<%= product.ID %>" class="form-label">Кросс-код</label>
+                        <textarea class="form-control" id="productCross-<%= product.ID %>"><%= product.crossCode %></textarea>
+                        <div class="form-text">Здесь вы можете изменить кросс-коды</div>
                       </div>
 
                       <div class="mb-3">
@@ -105,8 +117,8 @@
 
                       
                       <button type="submit" class="btn btn-success update-product" data-id="<%= product.ID %>">Обновить товар</button>
-                      <button type="submit" class="btn btn-danger">Удалить</button>
-                      <button type="submit" class="btn btn-dark" id="test-btn" data-id="<%= product.ID %>">Тест</button>
+                      <button type="submit" class="btn btn-danger delete-product" data-id="<%= product.ID %>">Удалить</button>
+                      <!--button type="submit" class="btn btn-dark" id="test-btn" data-id="<%= product.ID %>">Тест</button-->
                     </div>
                     <div class="col-md-6">
                       <h5 class="text-center">Категории</h5>

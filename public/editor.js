@@ -162,7 +162,7 @@ addCategoryButtons.forEach(function (button) {
       // If an element with the same data-id doesn't exist, add a new one
       if (!existingElement) {
         // Create a new div element
-        const span = document.createElement("span")
+        const span = document.createElement("div")
         span.classList.add("badge", "text-bg-warning", "mb-10")
         // Set the text content of the div
         span.innerHTML = `${brand}: ${model.name} <button type="button" class="btn-close" aria-label="Close"></button>`
@@ -263,20 +263,37 @@ updateButtons.forEach(function (button) {
     loader.classList.remove("d-none")
     fadeOverlay.style.display = "block"
     const productId = this.getAttribute("data-id")
+    const catListDiv = document.getElementById(`catlist-${productId}`)
+    catListDiv.innerHTML = ""
     const categoryDiv = document.getElementById(`categories-${productId}`)
-    const spans = categoryDiv.querySelectorAll("span[data-id]")
+    const spans = categoryDiv.querySelectorAll("div[data-id]")
     const categories = Array.from(spans).map(span => span.dataset.id) //array of categories
+    const catNames = Array.from(spans).map(span => span.textContent) //category names
     const productTitle = document.getElementById(`productTitle-${productId}`).value //product name
     const innerId = document.getElementById(`productCode-${productId}`).value //inner id
+    const price = document.getElementById(`productPrice-${productId}`).value //price
+    const crossCode = document.getElementById(`productCross-${productId}`).value //cross-code
     const contentDiv = document.querySelector(`.show-content[data-id="${productId}"]`)
     const content = contentDiv.innerHTML
+
+    if (catNames.length > 0) {
+      catNames.forEach(item => {
+        const div = document.createElement("div")
+        div.classList.add("badge", "text-bg-warning", "mb-10")
+        div.style.marginLeft = "5px"
+        div.textContent = item
+        catListDiv.appendChild(div)
+      })
+    }
 
     const data = {
       productId,
       categories,
       productTitle,
       innerId,
-      content
+      content,
+      price,
+      crossCode
     }
 
     axios
@@ -294,19 +311,41 @@ updateButtons.forEach(function (button) {
   })
 })
 
+const deleteButtons = document.querySelectorAll(".delete-product")
+
+deleteButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    loader.classList.remove("d-none")
+    fadeOverlay.style.display = "block"
+    const id = this.getAttribute("data-id")
+    const trElements = document.querySelectorAll(`tr[data-id="${id}"]`)
+    const data = {
+      id
+    }
+
+    axios
+      .post("/delete-product", data)
+      .then(response => {
+        trElements.forEach(tr => {
+          tr.remove()
+        })
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        console.log("product deleted")
+      })
+      .catch(error => {
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        console.error("Error deleting product:", error)
+      })
+  })
+})
+
+/*
 const testBtn = document.getElementById("test-btn")
 testBtn.addEventListener("click", function () {
   const productId = this.getAttribute("data-id")
-  const categoryDiv = document.getElementById(`categories-${productId}`)
-  const spans = categoryDiv.querySelectorAll("span[data-id]")
-  const categories = Array.from(spans).map(span => span.dataset.id)
-  const catNames = Array.from(spans).map(span => span.textContent)
-  const catListDiv = document.getElementById(`catlist-${productId}`)
-  catNames.forEach(item => {
-    const div = document.createElement("div")
-    div.classList.add("badge", "text-bg-warning", "mb-10")
-    div.style.marginLeft = "5px"
-    div.textContent = item
-    catListDiv.appendChild(div)
-  })
+  const crossCode = document.getElementById(`productCross-${productId}`).value
+  console.log(crossCode)
 })
+*/

@@ -20,4 +20,6 @@ router.post("/search", mainController.search())
 
 router.post("/update-product", mainController.productUpdate())
 
+router.post("/delete-product", mainController.productDelete())
+
 module.exports = router
