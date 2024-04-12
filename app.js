@@ -3,6 +3,14 @@ const session = require("express-session")
 const fileUpload = require("express-fileupload")
 const app = express()
 
+app.use(
+  session({
+    secret: "blablablab12345",
+    resave: false,
+    saveUninitialized: true
+  })
+)
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*")
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT")
