@@ -68,3 +68,27 @@
   z-index: 999; /* Ensure it appears below the loader */
   display: none;
 }
+
+#editor-container {
+  height: 100px;
+}
+
+.inactive .ql-editor {
+  padding: 0;
+  line-height: inherit;
+}
+
+.inactive .ql-editor p {
+  padding: inherit;
+  margin-bottom: 10px;
+}
+
+.inactive .ql-toolbar {
+  display: none;
+}
+
+.inactive .ql-container.ql-snow {
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+}

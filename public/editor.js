@@ -177,86 +177,6 @@ addCategoryButtons.forEach(function (button) {
   })
 })
 
-//editor
-
-const editButtons = document.querySelectorAll(".edit-content")
-
-editButtons.forEach(button => {
-  button.addEventListener("click", function handleClick() {
-    const productId = button.getAttribute("data-id")
-    const contentDiv = document.querySelector(`.show-content[data-id="${productId}"]`)
-    if (contentDiv) {
-      const content = contentDiv.innerHTML
-      const textarea = document.createElement("textarea")
-      textarea.value = content
-      textarea.setAttribute("id", `editor-content-${productId}`) // Add data-id attribute
-
-      // Save a reference to the original div before replacing it
-      const parent = contentDiv.parentNode
-      const nextSibling = contentDiv.nextSibling
-
-      // Replace the content div with the textarea
-      parent.replaceChild(textarea, contentDiv)
-
-      tinymce.init({
-        selector: `textarea#editor-content-${productId}`
-        // TinyMCE initialization options...
-      })
-
-      // Change button class to 'save-content'
-      button.classList.remove("edit-content")
-      button.classList.add("save-content")
-
-      // Change button text to 'Сохранить'
-      button.textContent = "Сохранить"
-
-      // Attach event listener for save button
-      button.removeEventListener("click", handleClick) // Remove the event listener
-      button.addEventListener("click", function () {
-        const productId = button.getAttribute("data-id")
-        const updatedContent = tinymce.get(`editor-content-${productId}`).getContent()
-        tinymce.get(`editor-content-${productId}`).hide()
-
-        // Find the textarea element
-        const textarea = document.getElementById(`editor-content-${productId}`)
-        if (!textarea || textarea.parentElement !== parent) {
-          // If textarea doesn't exist or is not a direct child of parent, exit the function
-          return
-        }
-
-        // Restore the original div
-        const originalDiv = document.createElement("div")
-        originalDiv.classList.add("show-content")
-        originalDiv.setAttribute("data-id", productId)
-        originalDiv.innerHTML = updatedContent
-
-        // Insert the original div back into the DOM before the textarea
-        parent.insertBefore(originalDiv, textarea)
-
-        // Remove the textarea
-        parent.removeChild(textarea)
-
-        // Change button class back to 'edit-content'
-        button.classList.remove("save-content")
-        button.classList.add("edit-content")
-
-        // Change button text back to 'Редактировать'
-        button.textContent = "Редактировать"
-
-        // Destroy the existing instance of TinyMCE
-        const editor = tinymce.get(`editor-content-${productId}`)
-        if (editor) {
-          editor.remove()
-        }
-
-        // Reattach the event listener for edit button
-        button.removeEventListener("click", handleClick)
-        button.addEventListener("click", handleClick)
-      })
-    }
-  })
-})
-
 const updateButtons = document.querySelectorAll(".update-product")
 updateButtons.forEach(function (button) {
   button.addEventListener("click", function () {
@@ -349,3 +269,37 @@ testBtn.addEventListener("click", function () {
   console.log(crossCode)
 })
 */
+
+//editor
+const editButtons = document.querySelectorAll(".edit-content")
+const editors = {}
+const containerStates = {}
+
+editButtons.forEach(button => {
+  button.addEventListener("click", function handleClick() {
+    const productId = button.getAttribute("data-id")
+    const contentDiv = document.querySelector(`.show-content[data-id="${productId}"]`)
+    const container = document.getElementById(`editor-container-${productId}`)
+
+    // Toggle editor visibility state
+    containerStates[productId] = !containerStates[productId]
+
+    // Initialize Quill editor if not already initialized
+    if (!editors[productId]) {
+      editors[productId] = new Quill(contentDiv, {
+        theme: "snow" // or 'bubble'
+      })
+    }
+
+    // Enable/disable Quill editor
+    editors[productId].enable(containerStates[productId])
+
+    // Toggle button text and class
+    button.textContent = containerStates[productId] ? "Сохранить" : "Редактировать"
+    button.classList.toggle("save-content")
+    button.classList.toggle("edit-content")
+
+    // Toggle container visibility
+    container.classList.toggle("inactive", !containerStates[productId])
+  })
+})

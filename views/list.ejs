@@ -106,10 +106,10 @@
                         <select class="form-select form-select-sm" multiple disabled id="autoModels-<%= product.ID %>" size="10"></select>
                       </div>
                       <button type="submit" class="btn btn-primary add-category" id="add_btn-<%= product.ID %>">Добавить категорию</button>
-                      <div class="mb-3">
+                      <div class="mb-3" id="editor-container-<%= product.ID %>">
                         	
                         
-                        <div class="show-content" data-id="<%= product.ID %>" id="editor-<%= product.ID %>">
+                        <div class="show-content inactive" data-id="<%= product.ID %>" id="editor-<%= product.ID %>">
                           <%- product.content %>
                         </div>
                         <button type="button" class="btn btn-secondary edit-content" data-id="<%= product.ID %>">Редактировать</button>
@@ -142,12 +142,15 @@
     </div>
 
   </div>
+
+ 
 </main>
 <script>
   
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.js"></script>
 <script src="/editor.js"></script>
 </body>
 </html>
