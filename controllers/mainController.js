@@ -190,3 +190,9 @@ exports.productDelete = function () {
     }
   }
 }
+
+exports.getOrders = (req, res) => {
+  const order = req.body
+  console.log("Received order:", order)
+  res.sendStatus(200)
+}
