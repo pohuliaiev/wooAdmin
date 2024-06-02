@@ -34,6 +34,8 @@ router.post("/delete-product", mainController.productDelete())
 
 router.post("/get-order", mainController.getOrders)
 
+router.post("/get-form", mainController.getForm)
+
 router.post("/login", (req, res) => {
   const { password } = req.body
 

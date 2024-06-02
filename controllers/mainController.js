@@ -6,6 +6,8 @@ const wooSync = require("../models/wooSync")
 const updateHistory = require("../models/updateHistory")
 const uploadPrice = require("../models/uploadPrice")
 const updateProducts = require("../models/updateProducts")
+const Order = require("../models/order")
+const orderCollection = require("../db").db().collection("orders")
 
 exports.home = async function (req, res) {
   if (req.session.isAuthenticated) {
@@ -191,8 +193,23 @@ exports.productDelete = function () {
   }
 }
 
-exports.getOrders = (req, res) => {
-  const order = req.body
-  console.log("Received order:", order)
-  res.sendStatus(200)
+exports.getOrders = async (req, res) => {
+  const order = new Order()
+  order.type = "Корзина"
+  try {
+    await orderCollection.insertOne(order.wooCart(req))
+    res.status(200).json(order.wooCart(req))
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+exports.getForm = async (req, res) => {
+  const order = new Order()
+  order.type = req.body.type
+  try {
+    await orderCollection.insertOne(order.contactForm(req))
+  } catch (e) {
+    console.log(e)
+  }
 }

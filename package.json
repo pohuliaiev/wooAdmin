@@ -2,9 +2,9 @@
   "name": "wp-import",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "watch": "nodemon app",
+    "watch": "nodemon db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {
@@ -28,6 +28,7 @@
     "express-session": "^1.18.0",
     "form-data": "^4.0.0",
     "moment-timezone": "^0.5.45",
+    "mongodb": "^6.7.0",
     "mysql": "^2.18.1",
     "nodemon": "^3.1.0",
     "openai": "^4.47.1",
