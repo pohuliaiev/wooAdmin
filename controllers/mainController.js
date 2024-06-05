@@ -213,3 +213,28 @@ exports.getForm = async (req, res) => {
     console.log(e)
   }
 }
+
+exports.displayOrders = async (req, res) => {
+  if (req.session.isAuthenticated) {
+    try {
+      const orders = await orderCollection.find().toArray()
+      orders.sort((a, b) => {
+        const parseDate = dateString => {
+          const [datePart, timePart] = dateString.split(" ")
+          const [day, month, year] = datePart.split(".").map(Number)
+          const [hours, minutes] = timePart.split(":").map(Number)
+          return new Date(year, month - 1, day, hours, minutes)
+        }
+
+        const dateA = parseDate(a.date)
+        const dateB = parseDate(b.date)
+        return dateB - dateA
+      })
+      res.render("clients", { orders })
+    } catch (e) {
+      console.log(e)
+    }
+  } else {
+    res.render("login")
+  }
+}

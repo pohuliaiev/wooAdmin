@@ -1,0 +1,51 @@
+<%- include('header') %>
+<main class="mt-20">
+  <div class="container">
+    <div class="lds-ring d-none" id="preloader">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <h1 class="text-center mt-20">Заказы</h1>
+    <div class="products-list mt-20">
+      <table class="table table-bordered">
+        <thead>
+          <th scope="col">Тип</th>
+          <th scope="col">Дата</th>
+          <th scope="col">Номер телефона</th>
+          <th scope="col">Имя</th>
+          <th scope="col">Email</th>
+          <th scope="col">Номер заказа</th>
+          <th scope="col">Сумма</th>
+          <th scope="col">Доставка</th>
+          <th scope="col">Товары</th>
+        </thead>
+        <tbody>
+          <% orders.forEach(order => { %>
+          <tr>
+            <td><%= order.type %></td>
+            <td><%= order.date %></td>
+            <td><%= order.phone %></td>
+            <td><%= order.name ? order.name : '' %></td>
+            <td><%= order.email ? order.email : '' %></td>
+            <td><%= order.id ? order.id : '' %></td>
+            <td><%= order.total ? order.total : '' %></td>
+            <td><%= order.deliveryAdres ? order.deliveryAdres : '' %></td>
+            <td>
+              <% if (order.products) { %> <% if (Array.isArray(order.products)) { %> <% order.products.forEach(product => { %> Продукт: <%= product.name %>
+              <br />
+              Количество: <%= product.quantity %>
+              <br />
+              Цена: <%= product.price %>
+              <br />
+              <br />
+              <% }); %> <% } else { %> <%= order.products %> <% } %> <% } %>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>

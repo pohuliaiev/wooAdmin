@@ -7,9 +7,10 @@ class Order {
 
   wooCart = req => {
     const body = req.body
+    //  console.log(body)
     let products = body.line_items.map(function (item) {
       return {
-        name: item.name,
+        name: `${item.name} (<strong>${item.inner_id}</strong>)`,
         quantity: item.quantity,
         price: item.price
       }
@@ -27,14 +28,14 @@ class Order {
       payment: body.payment_method_title,
       products
     }
-    console.log("Received order:", order)
+    //  console.log("Received order:", order)
     return order
   }
 
   contactForm = req => {
     const contactData = req.body
 
-    console.log("Received contact form data:", contactData)
+    //  console.log("Received contact form data:", contactData)
 
     return contactData
   }

@@ -17,6 +17,8 @@ router.get("/", mainController.home)
 
 router.get("/products-list", mainController.editor)
 
+router.get("/crm", mainController.displayOrders)
+
 router.get("/uploads/categories.json", (req, res) => {
   const filePath = path.join(__dirname, "uploads", "categories.json")
   res.sendFile(filePath)
