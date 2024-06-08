@@ -10,7 +10,7 @@ class Order {
     //  console.log(body)
     let products = body.line_items.map(function (item) {
       return {
-        name: `${item.name} (<strong>${item.inner_id}</strong>)`,
+        name: `${item.name} (${item.inner_id})`,
         quantity: item.quantity,
         price: item.price
       }
@@ -28,16 +28,29 @@ class Order {
       payment: body.payment_method_title,
       products
     }
-    //  console.log("Received order:", order)
-    return order
+    let message = `Номер заказа: ${body.id}\n
+  Имя: ${body.billing.first_name} ${body.billing.last_name}\n
+  Сумма: ${body.total}\n
+  Номер телефона: ${body.billing.phone}\n
+  Email: ${body.billing.email}\n
+  Тип доставки: ${body.shipping_lines[0].method_title}\n
+  Номер отделения: ${body.billing.city} ${body.billing.address_1}\n
+  Тип оплаты: ${body.payment_method_title}\n
+  Товары:\n`
+    products.forEach((item, index) => {
+      message += `${index + 1}. ${item.name} (Количество: ${item.quantity})\n`
+    })
+    return { order, message }
   }
 
   contactForm = req => {
     const contactData = req.body
 
-    //  console.log("Received contact form data:", contactData)
+    let message = `Тип: ${this.type}\nНомер телефона: ${contactData.phone}\n`
+    message += contactData.products ? `Товар: ${contactData.products}\n` : ""
+    message += contactData.total ? `Сумма: ${contactData.total}\n` : ""
 
-    return contactData
+    return { contactData, message }
   }
 
   convertDateTime(dateTimeStr) {

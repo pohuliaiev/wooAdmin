@@ -9,6 +9,12 @@ const updateProducts = require("../models/updateProducts")
 const Order = require("../models/order")
 const orderCollection = require("../db").db().collection("orders")
 
+const chatId = process.env.CHATID
+
+const TelegramBot = require("node-telegram-bot-api")
+const tgToken = process.env.TGTOKEN
+const bot = new TelegramBot(tgToken, { polling: false })
+
 exports.home = async function (req, res) {
   if (req.session.isAuthenticated) {
     try {
@@ -197,8 +203,12 @@ exports.getOrders = async (req, res) => {
   const order = new Order()
   order.type = "Корзина"
   try {
-    await orderCollection.insertOne(order.wooCart(req))
-    res.status(200).json(order.wooCart(req))
+    const orderSent = order.wooCart(req).order
+    const message = order.wooCart(req).message
+    await orderCollection.insertOne(orderSent)
+
+    await bot.sendMessage(chatId, message)
+    res.status(200).json(orderSent)
   } catch (e) {
     console.log(e)
   }
@@ -208,7 +218,11 @@ exports.getForm = async (req, res) => {
   const order = new Order()
   order.type = req.body.type
   try {
-    await orderCollection.insertOne(order.contactForm(req))
+    const orderSent = order.contactForm(req)
+    const message = orderSent.message
+    const data = orderSent.contactData
+    await orderCollection.insertOne(data)
+    await bot.sendMessage(chatId, message)
   } catch (e) {
     console.log(e)
   }
